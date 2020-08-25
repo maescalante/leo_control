@@ -37,7 +37,7 @@ posicionActual = Posicion(0,0,0)
 # Posicion final del robot, inicialmente se toma como la cuadricula superior derecha con angulo 0
 posicionFinal=Posicion(40-distanciaCuadricula/2,40-distanciaCuadricula/2,math.pi/2)
 #Es el diametro de la rueda del Pioneer 3dx en metros.
-diametroRueda = 195.3/1000#metros
+diametroRueda = 130/1000#metros
 #Es el radio de la rueda del Pioneer 3dx en metros.
 radioRueda = diametroRueda/2 #metros
 #Es la distancia entre el punto P y el eje de cada rueda.
@@ -85,9 +85,9 @@ def punto2c():
     # Se suscribe a al topico de la informacion de los obstaculos
     rospy.Subscriber ('InfoObs', Twist, setObst)
     # Se suscribe a al topico de la informacion de la posicion del pioneer
-    rospy.Subscriber ('wheels_odom', Twist, setPositionCallback) # wheels_odom twist stamped
+    rospy.Subscriber ('/controllers/diff_drive/odom', Twist, setPositionCallback) # wheels_odom twist stamped
     # Se crea referencia a topico para publicar velocidad de los motores
-    pubMot = rospy.Publisher ('cmd_vel', Twist, queue_size=10)#twist
+    pubMot = rospy.Publisher ('/controllers/diff_drive/cmd_vel', Twist, queue_size=10)#twist
     # Se espera a que se publique por primera vez a traves del topico
     while not empezar:
         empezar = empezar or False
