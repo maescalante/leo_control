@@ -2,10 +2,11 @@
 #Se importan las librerias necesarias junto con los mensajes a utilizar
 import rospy, math, roslaunch, time, sys
 from std_msgs.msg import Float32MultiArray
-
-from geometry_msgs.msg import Twist, TwistStamped
+from nav_msgs.msg import Odometry
+from geometry_msgs.msg import Twist, TwistStamped,PoseWithCovariance,Pose
 import matplotlib.pyplot as plt
 import networkx as nx
+
 
 # Clase que representa una casilla, tiene ubicacion o punto que la define (mitad) y si un objeto la cubre o no.
 class Casilla:
@@ -71,7 +72,7 @@ mot = Twist()
 mot.linear.x=0
 mot.angular.z=0
 # Senal para saber si ya se esta corriendo la simulacion de ROS
-empezar = False
+empezar = True
 
 
 
@@ -85,7 +86,7 @@ def punto2c():
     # Se suscribe a al topico de la informacion de los obstaculos
     rospy.Subscriber ('InfoObs', Twist, setObst)
     # Se suscribe a al topico de la informacion de la posicion del pioneer
-    rospy.Subscriber ('/controllers/diff_drive/odom', Twist, setPositionCallback) # wheels_odom twist stamped
+    rospy.Subscriber ('/controllers/diff_drive/odom', Odometry, setPositionCallback) # wheels_odom twist stamped
     # Se crea referencia a topico para publicar velocidad de los motores
     pubMot = rospy.Publisher ('/controllers/diff_drive/cmd_vel', Twist, queue_size=10)#twist
     # Se espera a que se publique por primera vez a traves del topico
@@ -177,13 +178,15 @@ def numCasillas(x, y):
 
 
 # Metodo asociedo a topico para actualizar la posicon del pioneer
-def setPositionCallback(pos):
+def setPositionCallback(odom):
     global posicionActual
     # Se modifica las cordedanadas de el objeto de posicion del pioneer
+    pos=odom.pose
+    point= pos.pose
 
-    posicionActual.x=pos.linear.x
-    posicionActual.y=pos.linear.y
-    posicionActual.teta=pos.angular.z
+    posicionActual.x=point.position.x
+    posicionActual.y=point.position.y
+    posicionActual.teta=point.orientation.z
 
 
 # Metodo asociedo a topico para actualizar la posicion de los obstaculos
@@ -282,7 +285,7 @@ def libre(xCas, yCas):# Si se encuentra un obstaculo en ella
         if dist[i]<distRef[i]:
             ans=False
    # return (dist0>=distRef0) and (dist1>=distRef1) and (dist2>=distRef2) and (dist3>=distRef3) and (dist4>=distRef4)
-   return ans
+    return ans
 
 
 
@@ -346,7 +349,7 @@ def calcularAngulos(pos):
 # Metodo que ejecuta nodo graficador usanto herramiento roslaunch, crea un nuevo proceso.
 def iniciarGraficador():
     # Se define el paquete y nodo que se deben ejecutar
-    package = 'taller3_4'
+    package = 'leo_control'
     script = 'graficador.py'
     node = roslaunch.core.Node (package, script)
     launch = roslaunch.scriptapi.ROSLaunch ()
