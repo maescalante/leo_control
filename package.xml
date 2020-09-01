@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>route_planning</name>
+  <name>leo_control_auto</name>
   <version>0.0.0</version>
-  <description>The route_planning package</description>
+  <description>The leo_control_auto package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -58,6 +58,8 @@
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>std_msgs</exec_depend>
+  <build_depend>message_generation</build_depend>
+  <exec_depend>message_runtime</exec_depend>
 
 
   <!-- The export tag contains other, unspecified, tags -->

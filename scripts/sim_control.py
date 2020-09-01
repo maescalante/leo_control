@@ -4,9 +4,10 @@ import rospy, math, roslaunch, time
 from nav_msgs.msg import Odometry
 from geometry_msgs.msg import Twist, TwistStamped,PoseWithCovariance,Pose
 import networkx as nx
-
+from leo_control_auto.msg import Obstacle
 from std_msgs.msg import Int32
 import matplotlib.pyplot as plt
+
 
 
 # Clase que representa una casilla, tiene ubicacion o punto que la define (mitad) y si un objeto la cubre o no.
@@ -42,7 +43,7 @@ diametroRueda = 130/1000#metros
 # Es el radio de la rueda del Pioneer 3dx en metros.
 radioRueda = diametroRueda/2  #milimetros
 # Numero de obstaculos
-nObstacles = 0
+nObstacles = 1
 # Arreglo con obstaculos
 obstacles = []
 
@@ -85,7 +86,7 @@ umbralFin = math.pi/6
 # topico de motorsVel y tambien se lanza el nodo encargado de graficar. Ademas es el metodo encargado de realizar
 # las acciones de control necesarias segun la ruta dada para llevar el robot a la posicion final.
 def control():
-    global posicionActual, g, ruta, pubMot, arrivedP, p, umbralP, kp, kb, ka, empezar, pedal
+    global posicionActual, g, ruta, pubMot, arrivedP, p, umbralP, kp, kb, ka, empezar, pedal, obstacles
     # Se crean el nodo
     rospy.init_node('nodoControl', anonymous=True)
     # Se suscribe a al topico de la informacion de la posicion del pioneer
@@ -102,12 +103,22 @@ def control():
     pos.position.y =  0
     pos.orientation.w = 0
     pos2 = Pose()
-    pos2.position.x =  200
+    pos2.position.x =  900
     pos2.position.y =  0
     pos2.orientation.w = 0
     posicionActual=pos
     posicionFinal=pos2
-    obstacles=[]
+    pos3 = Pose()
+    pos3.position.x =  400
+    pos3.position.y =  0
+    pos3.orientation.w = 0
+    ob=Obstacle()
+    ob.position=pos3
+    ob.radius=0.01
+
+    obstacles.append(ob)
+
+
 
     # Se espera a que se publique por primera vez a traves del topico preguntarCasillas
    # while not empezar:
@@ -124,8 +135,8 @@ def control():
     # heuristica entre dos nodos
     ruta = nx.astar_path(g, numCasillas(posicionActual.position.x, posicionActual.position.y),
                          numCasillas(posicionFinal.position.x, posicionFinal.position.y), heuristic=heuristic)
-    #print("aca")
-    #visualizacionPrevia(ruta)
+    print("aca")
+    visualizacionPrevia(ruta)
     #print("aca2")
     print(len(ruta))
 
