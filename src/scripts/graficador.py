@@ -65,8 +65,8 @@ def animate(i):
     yCord.append (position.linear.y)
     # yCord = yCord[-100:]
     axs.clear()
-    axs.axes.set_xlim(-40, 40)
-    axs.axes.set_ylim(-40, 40)
+    axs.axes.set_xlim(-10, 10)
+    axs.axes.set_ylim(-10, 10)
     for i in lisObs:
 
         axs.add_artist (plt.Circle ((i.linear.x, i.linear.y), i.linear.z/2, color='r'))
