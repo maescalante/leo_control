@@ -29,9 +29,9 @@ class Posicion:
 # Iniciar grafico de networkx
 g = nx.Graph()
 # Distancia entre centro de cuadriculas, 10 debe ser divisible por esta distancia
-distanciaCuadricula = 80  #5  # .8 #1
+distanciaCuadricula =  0.8  # .8 #1
 # Numero de cuadriculas de la escena seleccionada
-n = int(2500/distanciaCuadricula)
+n = int(25/distanciaCuadricula)
 # Arreglo con la informacion de cada una de las casillas
 casillas = []
 # Posicion actual del robot, debe actualizarse por el topico
@@ -39,7 +39,7 @@ posicionActual = Pose()
 # Posicion final del robot, inicialmente se toma como la cuadricula superior derecha con angulo 0
 posicionFinal = Pose()
 # Es el diametro de la rueda en milimetros
-diametroRueda = 130/1000#metros
+diametroRueda = 0.13
 # Es el radio de la rueda del Pioneer 3dx en metros.
 radioRueda = diametroRueda/2  #milimetros
 # Numero de obstaculos
@@ -52,7 +52,7 @@ l = 50  # milimetros
 # Es la variable donde se almacena el valor de p (rho) que equivale a la distancia entre el punto actual y el final.
 p = 0
 # Es un umbral que se define para indicarle al robot cuando llega al punto final.
-umbralP = 50 # distanciaCuadricula/2
+umbralP = 0.4 # distanciaCuadricula/2
 # Es una variable booleana que indica que el robot ha llegado al punto final.
 arrivedP = False
 # Es la variable donde se guarda la distancia en x entre el punto actual y final.
@@ -99,22 +99,22 @@ def control():
     # Se crea el servicio que provee el nodo para recibir parametros de informacion
     #s = rospy.Service('iniciar_recorrido', StartService, handle_iniciar_recorrido)
     pos = Pose()
-    pos.position.x =  0
+    pos.position.x =  1
     pos.position.y =  0
     pos.orientation.w = 0
     pos2 = Pose()
-    pos2.position.x =  900
+    pos2.position.x =  4
     pos2.position.y =  0
     pos2.orientation.w = 0
     posicionActual=pos
     posicionFinal=pos2
     pos3 = Pose()
-    pos3.position.x =  400
+    pos3.position.x =  2
     pos3.position.y =  0
     pos3.orientation.w = 0
     ob=Obstacle()
     ob.position=pos3
-    ob.radius=0.01
+    ob.radius=0.5
 
     obstacles.append(ob)
 
@@ -255,7 +255,7 @@ def creadorVerticesCasillas():
     global distanciaCuadricula, n
     # Las variables a continuacion definen desde que posicion se empieza a discretizar la escena
     xInic = distanciaCuadricula/2
-    yInic = 2500 - distanciaCuadricula/2
+    yInic = 25 - distanciaCuadricula/2
     # El ciclo empieza a generar la matriz de casillas donde se guarda la discretizacion y anade el nodo al grafo.
     for i in range(0, n*n):
         g.add_node(i)
@@ -335,7 +335,7 @@ def creadorArcos():
 # que no haya obstaculo en ese punto y False de lo contrario
 # preguntar distRef pero ya corregido
 def libre(xCas, yCas):  # Si se encuentra un obstaculo en ella
-    distanciaCarro = 200
+    distanciaCarro = 0.42
     distBool = True
     for i in obstacles:
         rospy.loginfo("i:")
